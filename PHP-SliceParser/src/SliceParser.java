@@ -21,6 +21,7 @@ import com.google.gson.stream.JsonReader;
 
 
 import model.ProgramSlice;
+import patterns.VulnPattern;
 
 
 
@@ -32,9 +33,17 @@ public class SliceParser {
 
 	public static void main(String[] args) {
 
-		/*readDom();*/
+		try {
+			PatternScanner parser = new PatternScanner("C:\\Users\\pemol\\git\\SegSoft1718\\PHP-SliceParser\\slices\\Patterns.txt");
+			parser.processLineByLine();
+			//parser.printPatterns();
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		//parseFile();
-		mainParser(args[0]);
+		//mainParser(args[0]);
 		/*try {
 			parseFile("C:\\Users\\pemol\\eclipse-workspace\\PHP-SliceParser\\slices\\slice1.json");
 		} catch (FileNotFoundException e) {
@@ -75,9 +84,9 @@ public class SliceParser {
 					JsonObject child = children.get(i).getAsJsonObject();
 
 					String kind = child.get("kind").getAsString();
-					
 
-					
+
+
 					System.out.println("kind: "+ kind);
 
 					if(kind.equals("assign")) {
@@ -99,7 +108,7 @@ public class SliceParser {
 
 							String rKind = right.get("kind").getAsString();
 							System.out.println("right_kind: " + rKind);
-						
+
 							if(right.has("what")) {
 								System.out.println("---- WHAT ----");
 								JsonObject rightElem = right.get("what").getAsJsonObject();
@@ -232,20 +241,43 @@ public class SliceParser {
 		}
 	}
 
-	public static void readDom() {
-		BufferedReader reader = null;
-		System.out.println("readDom()");
-
+	public static void readDom(String patternsFilePath) 
+	{	
+		BufferedReader buffReader = null;
+		List<VulnPattern> pattern = new ArrayList<>();
 		try {
-			reader = new BufferedReader(new FileReader("C:\\Users\\pemol\\eclipse-workspace\\PHP-SliceParser\\slices\\slice1.json"));
-			Gson gson = new GsonBuilder().create();
-			ProgramSlice[] people = gson.fromJson(reader, ProgramSlice[].class);
+			int lineNum = 0;
+			buffReader = new BufferedReader(new FileReader(patternsFilePath));
+			String fileRead = buffReader.readLine();
 
-			System.out.println(people.toString());
+			// loop until all lines are read
+			while (fileRead != null)
+			{
+				// use string.split to load a string array with the values from each line of
+				// the file, using a comma as the delimiter
+				String[] tokenize = fileRead.split(",");
 
-			System.out.println("Object mode: " + people[0]);
+				// assume file is made correctly
+				// and make temporary variables for the three types of data
+				for(int i= 0; i < tokenize.length ; i++) {
+					System.out.println(tokenize[i]);
+				}
 
-		} catch (FileNotFoundException ex) {
+				// creat temporary instance of Inventory object
+				// and load with three data values
+				//VulnPattern tempObj = new VulnPattern();
+
+				// add to array list
+				//invItem.add(tempObj);
+
+				// read next line before looping
+				// if end of file reached 
+				fileRead = buffReader.readLine();
+			}
+
+			// close file stream
+			buffReader.close();
+		} catch (IOException ex ) {
 			System.out.println(ex.getMessage());
 		} finally {
 		}
