@@ -5,9 +5,9 @@ import java.util.ArrayList;
 public class ProgramSlice {
 	private String _kind;
 	private String _operator;
-	private ArrayList<Children> _children;
+	private ArrayList<SliceElement> _children;
 	
-	public ProgramSlice() {
+	public ProgramSlice(String kind, String operator) {
 		// TODO Auto-generated constructor stub
 	}
 
@@ -19,11 +19,11 @@ public class ProgramSlice {
 		this._kind = _kind;
 	}
 
-	public ArrayList<Children> getChildren() {
+	public ArrayList<SliceElement> getChildren() {
 		return _children;
 	}
 
-	public void setChildren(ArrayList<Children> children) {
+	public void setChildren(ArrayList<SliceElement> children) {
 		this._children = children;
 	}
 
@@ -33,31 +33,6 @@ public class ProgramSlice {
 
 	public void set_operator(String _operator) {
 		this._operator = _operator;
-	}
-
-	public class Children{
-		public int n_elements;
-		public int getN_elements() {
-			return n_elements;
-		}
-		public void setN_elements(int n_elements) {
-			this.n_elements = n_elements;
-		}
-		public String getKind() {
-			return kind;
-		}
-		public void setKind(String kind) {
-			this.kind = kind;
-		}
-		public String getName() {
-			return name;
-		}
-		public void setName(String name) {
-			this.name = name;
-		}
-		public String kind;
-		public String name;
-		
 	}
 	
 }
