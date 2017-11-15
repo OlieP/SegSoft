@@ -48,7 +48,7 @@ public class PatternScanner {
 		ArrayList<String> items = new ArrayList<String>();
 
 		if (scanner.hasNext()){
-			String s = scanner.next();
+			String s = scanner.nextLine();
 			log("Full Line: " + s);
 			String[] aux = s.split(",");
 			for(int i = 0; i < aux.length ; i++) {

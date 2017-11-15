@@ -19,10 +19,8 @@ import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 
 
-
 import model.ProgramSlice;
 import patterns.VulnPattern;
-
 
 
 public class SliceParser {
@@ -84,9 +82,6 @@ public class SliceParser {
 					JsonObject child = children.get(i).getAsJsonObject();
 
 					String kind = child.get("kind").getAsString();
-
-
-
 					System.out.println("kind: "+ kind);
 
 					if(kind.equals("assign")) {
