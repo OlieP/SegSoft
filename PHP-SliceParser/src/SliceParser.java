@@ -34,7 +34,7 @@ public class SliceParser {
 
 		/*readDom();*/
 		//parseFile();
-		mainParser();
+		mainParser(args[0]);
 		/*try {
 			parseFile("C:\\Users\\pemol\\eclipse-workspace\\PHP-SliceParser\\slices\\slice1.json");
 		} catch (FileNotFoundException e) {
@@ -45,11 +45,11 @@ public class SliceParser {
 
 	}
 
-	public static void mainParser() {
+	public static void mainParser(String filePath) {
 
 		try {
 			JsonParser parser = new JsonParser();
-			String filePath = "C:\\Users\\pemol\\eclipse-workspace\\PHP-Slice-Parser\\slices\\slice1.json";
+			//String filePath = "C:\\Users\\pemol\\eclipse-workspace\\PHP-Slice-Parser\\slices\\slice1.json";
 			List<String> calledFunctions = new ArrayList<String>();
 			String usedEntry = "";
 			String _entryPoint = "";
@@ -122,8 +122,19 @@ public class SliceParser {
 						
 						if(right.get("kind").getAsString().equals("call")) {
 							System.out.println("----CALL---");
+							
 							JsonObject rightElem = right.get("what").getAsJsonObject();
 							String fName = rightElem.get("name").getAsString();
+							System.out.println("call_func: "+ fName);
+							
+							if(right.has("arguments")) {
+								JsonArray call_args = right.get("arguments").getAsJsonArray();
+								for(int l = 0; l < call_args.size();l++) {
+									JsonObject arg = call_args.get(l).getAsJsonObject();
+									System.out.println("call_args["+l+"]: "+ arg.get("name"));
+								}
+							}
+							
 							calledFunctions.add(fName);
 
 						
