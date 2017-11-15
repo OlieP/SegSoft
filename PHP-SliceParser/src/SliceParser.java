@@ -64,24 +64,25 @@ public class SliceParser {
 				JsonObject program = element.getAsJsonObject();
 				String progKind = program.get("kind").getAsString();
 				System.out.println(progKind);
-				
 
 				JsonArray children = program.getAsJsonArray("children");
 				System.out.println("There are "+ children.size() + " children");
 
 				for (int i = 0; i < children.size(); i++) {
 
-					System.out.println("------- Child:"+(i+1));
+					System.out.println("------- Child: "+(i+1)+" -------");
 
 					JsonObject child = children.get(i).getAsJsonObject();
 
 					String kind = child.get("kind").getAsString();
-				
+					
+
+					
 					System.out.println("kind: "+ kind);
 
 					if(kind.equals("assign")) {
 
-						System.out.println("-----Left branch----");
+						System.out.println("----- LEFT -----");
 						JsonObject left = child.getAsJsonObject("left");
 						String left_kind = left.get("kind").getAsString();
 						String left_name = left.get("name").getAsString();
@@ -90,16 +91,17 @@ public class SliceParser {
 
 						_vars.add(left_name);
 
-						System.out.println("-----Right branch----");
+						System.out.println("----- RIGHT -----");
 						JsonObject right = child.getAsJsonObject("right");
+
 
 						if(right.get("kind").getAsString().equals("offsetlookup")) {
 
 							String rKind = right.get("kind").getAsString();
 							System.out.println("right_kind: " + rKind);
-
+						
 							if(right.has("what")) {
-								System.out.println("----right::WHAT----");
+								System.out.println("---- WHAT ----");
 								JsonObject rightElem = right.get("what").getAsJsonObject();
 								System.out.println("what_kind: " + rightElem.get("kind").getAsString());
 								System.out.println("what_name: " + rightElem.get("name").getAsString());
@@ -113,20 +115,20 @@ public class SliceParser {
 								}		
 							}
 							if(right.has("offset")) {
-								System.out.println("----OFFSET---");
+								System.out.println("---- OFFSET ----");
 								JsonObject offset = right.get("offset").getAsJsonObject();
 								_entryPointArg = offset.get("value").getAsString();
 								System.out.println("_entryPointArg: " +_entryPointArg );
 							}
 						}
-						
+
 						if(right.get("kind").getAsString().equals("call")) {
-							System.out.println("----CALL---");
-							
+							System.out.println("---- CALL ----");
+
 							JsonObject rightElem = right.get("what").getAsJsonObject();
 							String fName = rightElem.get("name").getAsString();
 							System.out.println("call_func: "+ fName);
-							
+
 							if(right.has("arguments")) {
 								JsonArray call_args = right.get("arguments").getAsJsonArray();
 								for(int l = 0; l < call_args.size();l++) {
@@ -134,14 +136,31 @@ public class SliceParser {
 									System.out.println("call_args["+l+"]: "+ arg.get("name"));
 								}
 							}
-							
 							calledFunctions.add(fName);
-
-						
 						}
+						if(right.get("kind").getAsString().equals("encapsed")) {
+							System.out.println("----- Encapsed -----");
+							if(right.has("type")){
+								String type = right.get("type").getAsString();
+								System.out.println("type: "+ type);
+
+							}
+							if(right.has("value")) {
+								System.out.println("----- value vector: ------");
+								JsonArray encapsed_values = right.get("value").getAsJsonArray();
+								for(int l = 0; l < encapsed_values.size();l++) {
+									JsonObject arg = encapsed_values.get(l).getAsJsonObject();
+
+									if(arg.get("kind").getAsString().equals("variable")){
+										System.out.println("encapsed_variable_name["+l+"]: "+ arg.get("name"));
+									}else if(arg.get("kind").getAsString().equals("string")) {
+										System.out.println("encapsed_string_value["+l+"]: "+ arg.get("value"));
+									}
+								}
+							}
+						}
+
 					}
-
-
 				}
 			}
 			System.out.println("The variable used for user input is: "+"["+ _entryPoint+"]");
