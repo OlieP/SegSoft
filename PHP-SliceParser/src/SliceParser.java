@@ -31,15 +31,17 @@ public class SliceParser {
 
 	public static void main(String[] args) {
 
-		try {
+		//try {
 			PatternScanner parser = new PatternScanner("C:\\Users\\pemol\\git\\SegSoft1718\\PHP-SliceParser\\slices\\Patterns.txt");
-			parser.processLineByLine();
+			parser.readPatterns();
+			parser.printPatterns();
+			//parser.processLineByLine();
 			//parser.printPatterns();
 			
-		} catch (IOException e) {
+		//} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+			//e.printStackTrace();
+		//}
 		//parseFile();
 		//mainParser(args[0]);
 		/*try {
