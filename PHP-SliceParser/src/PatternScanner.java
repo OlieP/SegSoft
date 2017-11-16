@@ -7,21 +7,28 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 public class PatternScanner {
 
-	public Map<String,ArrayList<String>> _patterns = new HashMap<String,ArrayList<String>>();
-    //private HashMap<String,ArrayList<String>> _patterns = new HashMap<String,ArrayList<String>>();
+	public Map<String,List<String>> _patterns = new HashMap<String,List<String>>();
+
 	// Outraline = bufRead.readLine(); maneira de fazer.. mais facil, vai buscar 4 linhas de cada vez..
+
+	private static <KEY, VALUE> void put(Map<KEY, List<VALUE>> map, KEY key, VALUE value) {
+		map.compute(key, (s, strings) -> strings == null ? new ArrayList<>() : strings).add(value);
+	}	
+
 	public void readPatterns( ) {
 		String line; 
 		String line1;
 		String line2;
 		String line3;
-		
+
 		try {
 			FileReader input = new FileReader("C:\\Users\\pemol\\git\\SegSoft1718\\PHP-SliceParser\\slices\\Patterns.txt");
 
@@ -38,46 +45,56 @@ public class PatternScanner {
 			count1++;
 			count2++;
 			// Read through file one line at time. Print line # and line
-			
+
 			while (line != null){
 				System.out.println("1st Line:" + count+": "+line);
-				
+
 				line1 = bufRead.readLine();
 				line2 = bufRead.readLine();
 				line3 = bufRead.readLine();
-				
+
 				ArrayList<String> pattern_l1 = new ArrayList<String>();
 				ArrayList<String> pattern_l2 = new ArrayList<String>();
 				ArrayList<String> pattern_l3 = new ArrayList<String>();
-				
+
 				String split_1[] = line1.split(",");
 				String split_2[] = line2.split(",");
 				String split_3[] = line3.split(",");
 				for(int i = 0; i < split_1.length ; i++){
 					pattern_l1.add(split_1[i]);
+					put(_patterns,line,split_1[i]);
 				}
+
 				for(int i = 0; i < split_2.length ; i++){
 					pattern_l2.add(split_2[i]);
+					put(_patterns,line,split_2[i]);
 				}
+
 				for(int i = 0; i < split_3.length ; i++){
 					pattern_l3.add(split_3[i]);
+					put(_patterns,line,split_3[i]);
 				}
-			
-				System.out.println(pattern_l1);
-				System.out.println(pattern_l2);
-				System.out.println(pattern_l3);
-				//this._patterns.put(line, pattern);
-				
+
+
+				//System.out.println(pattern_l1);
+				//System.out.println(pattern_l2);
+				//System.out.println(pattern_l3);
+
+				/*_patterns.forEach((s, strings) -> {
+					System.out.print(s + ": ");
+					System.out.println(strings.stream().collect(Collectors.joining(", ")));
+				});*/
+
 				line = bufRead.readLine();
-				
+
 				System.out.println("2nd Line: " +count1+": "+line1);
 				System.out.println("3rd Line: " +count2+": "+line2);
 				System.out.println("4rd Line: " +count3+": "+line3);
 				count++;
 			}
-			
+
 			bufRead.close();
-			
+
 		}catch (ArrayIndexOutOfBoundsException e){
 			System.out.println("Usage: java ReadFile filename\n");          
 
@@ -87,6 +104,7 @@ public class PatternScanner {
 		}
 
 	}
+
 
 
 
@@ -141,14 +159,12 @@ public class PatternScanner {
 
 	protected void printPatterns() {
 		System.out.println("There are "+ _patterns.size()+ " patterns");
-		for(int i = 0; i < _patterns.size(); i++) {
+		System.out.println(_patterns);
 
-			for(int j=0; j < _patterns.get("SQL injection").size(); j++) {
-			
-				System.out.println(_patterns.get("SQL injection") );
-				
-			}
-		}
+		List<String> coll = _patterns.get("SQL injection");
+		System.out.println(coll);
+
+
 
 	}
 
