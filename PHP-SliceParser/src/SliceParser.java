@@ -1,26 +1,18 @@
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 
-
 import model.ProgramSlice;
-import patterns.VulnPattern;
 
 
 public class SliceParser {
@@ -33,8 +25,8 @@ public class SliceParser {
 
 		//try {
 			PatternScanner parser = new PatternScanner("C:\\Users\\pemol\\git\\SegSoft1718\\PHP-SliceParser\\slices\\Patterns.txt");
-			parser.readPatterns();
-			parser.printPatterns();
+			//parser.readPatterns();
+			//parser.printPatterns();
 			//parser.processLineByLine();
 			//parser.printPatterns();
 			
@@ -42,8 +34,8 @@ public class SliceParser {
 			// TODO Auto-generated catch block
 			//e.printStackTrace();
 		//}
-		//parseFile();
-		//mainParser(args[0]);
+		parseFile();
+		mainParser(args[0]);
 		/*try {
 			parseFile("C:\\Users\\pemol\\eclipse-workspace\\PHP-SliceParser\\slices\\slice1.json");
 		} catch (FileNotFoundException e) {
@@ -241,9 +233,9 @@ public class SliceParser {
 	public static void readDom(String patternsFilePath) 
 	{	
 		BufferedReader buffReader = null;
-		List<VulnPattern> pattern = new ArrayList<>();
+		//List<VulnPattern> pattern = new ArrayList<>();
 		try {
-			int lineNum = 0;
+		
 			buffReader = new BufferedReader(new FileReader(patternsFilePath));
 			String fileRead = buffReader.readLine();
 

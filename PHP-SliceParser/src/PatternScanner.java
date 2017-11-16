@@ -10,18 +10,26 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.TreeMap;
-import java.util.stream.Collectors;
+
+import javax.swing.SingleSelectionModel;
+
+import patterns.VulnPattern;
+
 
 public class PatternScanner {
 
-	public Map<String,List<String>> _patterns = new HashMap<String,List<String>>();
+	private final Path fFilePath ;
+	private  ArrayList<ArrayList<String>> patterns;
+	private ArrayList<VulnPattern> _patterns = new ArrayList<VulnPattern>();
 
-	// Outraline = bufRead.readLine(); maneira de fazer.. mais facil, vai buscar 4 linhas de cada vez..
+	public PatternScanner(String filePath){
+		fFilePath = Paths.get(filePath);
+		patterns = new ArrayList<ArrayList<String>>();
+	}
 
-	private static <KEY, VALUE> void put(Map<KEY, List<VALUE>> map, KEY key, VALUE value) {
-		map.compute(key, (s, strings) -> strings == null ? new ArrayList<>() : strings).add(value);
-	}	
+	private static void log(Object aObject){
+		System.out.println(String.valueOf(aObject));
+	}
 
 	public void readPatterns( ) {
 		String line; 
@@ -33,6 +41,8 @@ public class PatternScanner {
 			FileReader input = new FileReader("C:\\Users\\pemol\\git\\SegSoft1718\\PHP-SliceParser\\slices\\Patterns.txt");
 
 			BufferedReader bufRead = new BufferedReader(input);
+
+			VulnPattern pattern = new VulnPattern();
 
 			//String line1; // String that holds current file line
 			int count = 0; // Line number of count 
@@ -47,51 +57,44 @@ public class PatternScanner {
 			// Read through file one line at time. Print line # and line
 
 			while (line != null){
-				System.out.println("1st Line:" + count+": "+line);
+				pattern = new VulnPattern();
+				//System.out.println("1st Line:" + count+": "+line);
 
 				line1 = bufRead.readLine();
 				line2 = bufRead.readLine();
 				line3 = bufRead.readLine();
 
-				ArrayList<String> pattern_l1 = new ArrayList<String>();
-				ArrayList<String> pattern_l2 = new ArrayList<String>();
-				ArrayList<String> pattern_l3 = new ArrayList<String>();
-
 				String split_1[] = line1.split(",");
 				String split_2[] = line2.split(",");
 				String split_3[] = line3.split(",");
+
 				for(int i = 0; i < split_1.length ; i++){
-					pattern_l1.add(split_1[i]);
-					put(_patterns,line,split_1[i]);
+					//pattern.add_entryPoint(split_1[i]);
+					pattern.add_entryPoint(split_1[i]);
+					//System.out.println(split_1[i]);
 				}
-
+				//pattern.set_entryPoints(pattern_l1);
 				for(int i = 0; i < split_2.length ; i++){
-					pattern_l2.add(split_2[i]);
-					put(_patterns,line,split_2[i]);
+					pattern.add_sanitization(split_2[1]);
+					//System.out.println(split_2[i]);
 				}
-
+				//pattern.set_saninitizationFuncs(pattern_l2);
 				for(int i = 0; i < split_3.length ; i++){
-					pattern_l3.add(split_3[i]);
-					put(_patterns,line,split_3[i]);
+					pattern.add_sensitiveSink(split_3[i]);
+					//System.out.println(split_3[i]);
 				}
 
 
-				//System.out.println(pattern_l1);
-				//System.out.println(pattern_l2);
-				//System.out.println(pattern_l3);
-
-				/*_patterns.forEach((s, strings) -> {
-					System.out.print(s + ": ");
-					System.out.println(strings.stream().collect(Collectors.joining(", ")));
-				});*/
+				_patterns.add(pattern);
 
 				line = bufRead.readLine();
 
-				System.out.println("2nd Line: " +count1+": "+line1);
-				System.out.println("3rd Line: " +count2+": "+line2);
-				System.out.println("4rd Line: " +count3+": "+line3);
+				//System.out.println("2nd Line: " +count1+": "+line1);
+				//System.out.println("3rd Line: " +count2+": "+line2);
+				//System.out.println("4rd Line: " +count3+": "+line3);
 				count++;
 			}
+
 
 			bufRead.close();
 
@@ -106,63 +109,18 @@ public class PatternScanner {
 	}
 
 
-
-
-	private final Path fFilePath ;
-	private final static Charset ENCODING = StandardCharsets.UTF_8;  
-	private  ArrayList<ArrayList<String>> patterns;
-
-	private static void log(Object aObject){
-		System.out.println(String.valueOf(aObject));
-	}
-
-
-	public PatternScanner(String filePath){
-		fFilePath = Paths.get(filePath);
-		patterns = new ArrayList<ArrayList<String>>();
-	}
-
-
-	/** Template method that calls {@link #processLine(String)}.  */
-	public final void processLineByLine() throws IOException {
-		try (Scanner scanner =  new Scanner(fFilePath,ENCODING.name())){
-
-			while (scanner.hasNextLine()){
-				ArrayList<String> p = processLine(scanner.nextLine());
-				System.out.println("processByLine" + p);
-				patterns.add(p);
-			}    
-		}
-		System.out.println(patterns);
-	}
-
-	protected ArrayList<String> processLine(String aLine){
-		//use a second Scanner to parse the content of each line 
-		Scanner scanner = new Scanner(aLine);
-
-		ArrayList<String> items = new ArrayList<String>();
-
-		if (scanner.hasNext()){
-			String s = scanner.nextLine();
-			log("Full Line: " + s);
-			String[] aux = s.split(",");
-			for(int i = 0; i < aux.length % 4 ; i++) {
-				log("Striped Line: " + aux[i]);
-
-				items.add(aux[i]);
-			}
-			System.out.println(items);
-			scanner.close();
-		}
-		return items;
-	}
-
 	protected void printPatterns() {
 		System.out.println("There are "+ _patterns.size()+ " patterns");
-		System.out.println(_patterns);
 
-		List<String> coll = _patterns.get("SQL injection");
-		System.out.println(coll);
+		//List<String> coll = _patterns.get("SQL injection");
+		//System.out.println(coll);
+		for(int i= 0; i< _patterns.size();i++) {
+			VulnPattern vuln = _patterns.get(i);
+			System.out.println(vuln.get_entryPoints());
+			System.out.println(vuln.get_saninitizationFuncs());
+			System.out.println(vuln.get_sensitiveSinks());
+
+		}
 
 
 
