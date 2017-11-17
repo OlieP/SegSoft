@@ -20,4 +20,11 @@ public class Literal_node extends Expression_node {
 		this._nodeValues = _nodeValues;
 	}
 
+	public String toString() {
+		String s = "";
+		for(int i = 0; i< _nodeValues.size(); i++) {
+			s += _nodeValues.get(i).toString()+"\n";
+		}
+		return s;
+	}
 }

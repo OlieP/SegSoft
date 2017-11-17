@@ -6,7 +6,7 @@ public class Assign_node extends Statement_node{
 	private Expression_node right_node;
 
 	public Assign_node(String kind, String left_name) {
-	    super(kind);
+		super(kind);
 		left_node = null;
 		right_node = null;
 	}
@@ -27,5 +27,7 @@ public class Assign_node extends Statement_node{
 		this.right_node= right_side;
 	}
 
-	
+	public String toString() {
+		return "Left: \n" + left_node.toString() + "\n right: \n"+ right_node.toString();
+	}
 }

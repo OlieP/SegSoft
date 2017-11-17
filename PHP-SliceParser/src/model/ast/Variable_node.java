@@ -17,6 +17,8 @@ public class Variable_node extends Expression_node{
 		this._name = name;
 	}
 
-	
+	public String toString() {
+		return "variable: \n kind: "+_kind +"\n name: " +_name +"\n";
+	}
 
 }

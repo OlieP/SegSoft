@@ -28,7 +28,15 @@ public class Call_node extends Statement_node {
 	public void set_args(ArrayList<Expression_node> _args) {
 		this._args = _args;
 	}
-
+	
+	public String toString() {
+		String s = "\nCall: " + _funcName;
+		String v = "";
+		for(int i = 0; i< _args.size();i++) {
+		   v +=  _args.get(i).toString();
+		}
+		return s +"\n"+v; 
+	}
 }
 
 

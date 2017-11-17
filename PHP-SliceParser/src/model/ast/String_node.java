@@ -17,4 +17,7 @@ public class String_node extends Expression_node{
 		this._value = value;
 	}
 
+	public String toString() {
+		return  _value + "(kind: " +super.get_kind()+ ")\n";
+	}
 }

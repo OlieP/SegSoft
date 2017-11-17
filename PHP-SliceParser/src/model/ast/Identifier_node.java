@@ -9,5 +9,15 @@ public class Identifier_node extends Node {
 		// TODO Auto-generated constructor stub~
 		_name = name;
 	}
+	public String get_name() {
+		return _name;
+	}
 
+	public void set_name(String _name) {
+		this._name = _name;
+	}
+	
+	public String toString() {
+		return get_name().toString();
+	}
 }

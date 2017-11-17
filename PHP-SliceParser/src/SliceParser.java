@@ -1,29 +1,21 @@
-import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.stream.JsonReader;
 
-import model.ProgramSlice;
-import model.SliceElement.OffsetLookup;
-import model.ast.Assign_node;
 import model.ast.Block_node;
 import model.ast.Call_node;
 import model.ast.Encapsed_node;
 import model.ast.Expression_node;
-import model.ast.Variable_node;
 import model.ast.Node;
 import model.ast.OffsetLookup_node;
-import model.ast.Statement_node;
 import model.ast.String_node;
+import model.ast.Variable_node;
 
 
 public class SliceParser {
@@ -46,7 +38,6 @@ public class SliceParser {
 		p.mainParser(args[0]);
 	}
 	
-
 
 	public ArrayList<String> fromJsonArrayToArrayList(JsonArray value) {
 		ArrayList<String> list = new ArrayList<String>();     
@@ -85,20 +76,17 @@ public class SliceParser {
 				String progKind = program.get("kind").getAsString();
 
 				block_node = new Block_node(progKind);
-
-				ArrayList<Node> childs = block_node.get_cildren();
 				
 				ArrayList<Node> left_childs = new ArrayList<Node>();
 				ArrayList<Node> right_childs = new ArrayList<Node>();
-
 
 				for (int i = 0; i < children.size(); i++) {
 					child = children.get(i).getAsJsonObject();
 					String child_kind =  child.get("kind").getAsString();
 					String child_operator =  child.get("operator").getAsString();
 
-					System.out.println(child);
-					System.out.println("child_kind: "+ child_kind +", child_operator: " + child_operator);
+					//System.out.println(child);
+					//System.out.println("child_kind: "+ child_kind +", child_operator: " + child_operator);
 
 					if(child.has("left")) {
 						left_child = child.get("left").getAsJsonObject();
@@ -120,8 +108,8 @@ public class SliceParser {
 						JsonObject what = new JsonObject();
 
 						right_child = child.get("right").getAsJsonObject();
-						System.out.println("----Right----");
-						System.out.println(right_child);
+						//System.out.println("----Right----");
+						//System.out.println(right_child);
 						String right_child_kind = right_child.get("kind").getAsString();
 						String right_child_type = "";
 
@@ -129,14 +117,14 @@ public class SliceParser {
 							right_child_type = right_child.get("type").getAsString();
 						}
 
-						System.out.println("right_kind: "+ right_child_kind +", right_type: " +right_child_type);
+						//System.out.println("right_kind: "+ right_child_kind +", right_type: " +right_child_type);
 
 						if(right_child_kind.equals("offsetlookup")) {
 							what = right_child.get("what").getAsJsonObject();
 							String what_kind = what.get("kind").getAsString();
 							String what_name = what.get("name").getAsString();
-							System.out.println("----offsetlookup/what---");
-							System.out.println(what);
+						//	System.out.println("----offsetlookup/what---");
+						//	System.out.println(what);
 							
 							Variable_node what_var = new Variable_node(what_kind, what_name);
 							String_node offset_str = null;
@@ -148,8 +136,8 @@ public class SliceParser {
 
 								offset_str = new String_node(offset_kind,offset_value);
 								
-								System.out.println("----offset/offsetlookup----");
-								System.out.println(offset);
+							//	System.out.println("----offset/offsetlookup----");
+							//	System.out.println(offset);
 							}
 							
 							OffsetLookup_node offLk = new OffsetLookup_node("offsetlookup", what_var, offset_str);
@@ -159,42 +147,30 @@ public class SliceParser {
 						if(right_child_kind.equals("encapsed")) {
 							String kind =  right_child.get("kind").getAsString();
 							JsonArray value = right_child.get("value").getAsJsonArray();
-							ArrayList<String> encapsedValues = fromJsonArrayToArrayList(value);  
+							String type = right_child.get("type").getAsString();
 							
-							Encapsed_node enc = new Encapsed_node(kind,right_child.get("type").getAsString());
+							Encapsed_node enc = new Encapsed_node(kind,type);
 							
-							System.out.println("----encapsed----");
-							System.out.println(value);
-
-		
-							System.out.println("Printing encapsed values");
-							for(int j = 0; j < encapsedValues.size(); j++) {
-								//System.out.println(encapsedValues.get(j));
-							}
+							ArrayList<Expression_node> encapsedValues = new ArrayList<Expression_node>();
+			
 							for(int j = 0; j < value.size(); j++) {
 								JsonObject val1 = (JsonObject) value.get(j);
 								String val_kind = val1.get("kind").getAsString();
-								String var_name="";
-								String str_value="";
 								
-								Expression_node aux = null;
-
 								if(val_kind.equals("string")) {
-									str_value = val1.get("value").getAsString();
-									aux =  new String_node(val_kind,str_value);
+									String str_value = val1.get("value").getAsString();
+									Expression_node aux =  new String_node(val_kind,str_value);
+									encapsedValues.add(aux);
 									
 								}else if(val_kind.equals("variable")) {
-									var_name = val1.get("name").getAsString();
-									aux =  new Variable_node(val_kind,var_name);
+									String var_name = val1.get("name").getAsString();
+									Expression_node aux =  new Variable_node(val_kind,var_name);
+									encapsedValues.add(aux);
 								}
 								
-								right_childs.add(aux);
-								
-								System.out.println("kind: " + val_kind);
-								System.out.println("value: "+ var_name);
-								System.out.println("name: "+ str_value);
 							}
-
+							enc.setVariables(encapsedValues);
+							right_childs.add(enc);
 						}
 						
 						if(right_child_kind.equals("call"))
@@ -203,16 +179,11 @@ public class SliceParser {
 							what = right_child.get("what").getAsJsonObject();
 							String what_kind = what.get("kind").getAsString();
 							String what_name = what.get("name").getAsString();
-							System.out.println("----call/what---");
-							System.out.println(what);
-
-							
-							
+		
 							ArrayList<Expression_node> funcArgsList = new ArrayList<Expression_node>();
 
 							if(right_child.has("arguments")) {
-								System.out.println("----call/arguments---");
-								
+							
 								funcArgs = right_child.get("arguments").getAsJsonArray();
 							
 								for(int b =0; b < funcArgs.size(); b++) {
@@ -224,8 +195,6 @@ public class SliceParser {
 									Variable_node var = new Variable_node(arg_kind,arg_name);
 									
 									funcArgsList.add(var);
-									
-									System.out.println(var);
 								}
 							}
 							
@@ -233,10 +202,21 @@ public class SliceParser {
 							right_childs.add(call);
 						}
 					}
-					System.out.println("\n------- Next Child -------\n");
+					//System.out.println("\n------- Next Child -------\n");
 				}
 				
-				System.out.println(right_childs);
+			
+				//coloca os filhos esquerdos e direitos no mesmo array... pode nao ser preciso.
+				ArrayList<Node> newListChilds = new ArrayList<Node>(left_childs);
+				newListChilds.addAll(right_childs);
+				
+				//System.out.println(newListChilds);
+				
+				block_node.set_cildren(newListChilds); //o bloco tem todos os filhos do programa
+				
+				System.out.println(block_node.toString());
+				
+				
 				/*for (int i = 0; i < children.size(); i++) {
 
 					System.out.println("------- Child: "+(i+1)+" -------");
