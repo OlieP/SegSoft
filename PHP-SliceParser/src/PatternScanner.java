@@ -18,13 +18,28 @@ import patterns.VulnPattern;
 
 public class PatternScanner {
 
-	private final Path fFilePath ;
-	private  ArrayList<ArrayList<String>> patterns;
+	private final Path fFilePath= null ;
+	private  ArrayList<ArrayList<String>> patterns = null;
 	private ArrayList<VulnPattern> _patterns = new ArrayList<VulnPattern>();
 
-	public PatternScanner(String filePath){
-		fFilePath = Paths.get(filePath);
+	public PatternScanner(){
 		patterns = new ArrayList<ArrayList<String>>();
+	}
+
+	public ArrayList<ArrayList<String>> getPatterns() {
+		return patterns;
+	}
+
+	public void setPatterns(ArrayList<ArrayList<String>> patterns) {
+		this.patterns = patterns;
+	}
+
+	public ArrayList<VulnPattern> get_patterns() {
+		return _patterns;
+	}
+
+	public void set_patterns(ArrayList<VulnPattern> _patterns) {
+		this._patterns = _patterns;
 	}
 
 	private static void log(Object aObject){
