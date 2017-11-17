@@ -7,8 +7,8 @@ public class Assign_node extends Statement_node{
 
 	public Assign_node(String kind, String left_name) {
 		super(kind);
-		left_node = null;
-		right_node = null;
+		left_node = new Expression_node(kind);
+		right_node = new Expression_node(kind);
 	}
 
 	public Expression_node  getLeft_var_node() {

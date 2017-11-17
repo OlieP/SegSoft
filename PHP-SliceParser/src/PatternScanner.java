@@ -19,21 +19,13 @@ import patterns.VulnPattern;
 public class PatternScanner {
 
 	private final Path fFilePath= null ;
-	private  ArrayList<ArrayList<String>> patterns = null;
 	private ArrayList<VulnPattern> _patterns = new ArrayList<VulnPattern>();
 
 	public PatternScanner(){
-		patterns = new ArrayList<ArrayList<String>>();
+		_patterns = new ArrayList<VulnPattern>();
 	}
 
-	public ArrayList<ArrayList<String>> getPatterns() {
-		return patterns;
-	}
-
-	public void setPatterns(ArrayList<ArrayList<String>> patterns) {
-		this.patterns = patterns;
-	}
-
+	
 	public ArrayList<VulnPattern> get_patterns() {
 		return _patterns;
 	}
@@ -42,10 +34,7 @@ public class PatternScanner {
 		this._patterns = _patterns;
 	}
 
-	private static void log(Object aObject){
-		System.out.println(String.valueOf(aObject));
-	}
-
+	
 	public void readPatterns( ) {
 		String line; 
 		String line1;
@@ -83,20 +72,18 @@ public class PatternScanner {
 				String split_2[] = line2.split(",");
 				String split_3[] = line3.split(",");
 
-				for(int i = 0; i < split_1.length ; i++){
-					//pattern.add_entryPoint(split_1[i]);
+				for(int i = 0,j=0,k=0; i < split_1.length && j<split_2.length && k < split_3.length; i++,j++,k++){
 					pattern.add_entryPoint(split_1[i]);
-					//System.out.println(split_1[i]);
+					pattern.add_sanitization(split_2[1]);
+					pattern.add_sensitiveSink(split_3[i]);
 				}
 				//pattern.set_entryPoints(pattern_l1);
 				for(int i = 0; i < split_2.length ; i++){
-					pattern.add_sanitization(split_2[1]);
-					//System.out.println(split_2[i]);
+					
 				}
 				//pattern.set_saninitizationFuncs(pattern_l2);
 				for(int i = 0; i < split_3.length ; i++){
-					pattern.add_sensitiveSink(split_3[i]);
-					//System.out.println(split_3[i]);
+					
 				}
 
 
@@ -134,6 +121,8 @@ public class PatternScanner {
 			System.out.println(vuln.get_entryPoints());
 			System.out.println(vuln.get_saninitizationFuncs());
 			System.out.println(vuln.get_sensitiveSinks());
+			
+			System.out.println("");
 
 		}
 

@@ -14,8 +14,10 @@ import model.ast.Encapsed_node;
 import model.ast.Expression_node;
 import model.ast.Node;
 import model.ast.OffsetLookup_node;
+import model.ast.Statement_node;
 import model.ast.String_node;
 import model.ast.Variable_node;
+import patterns.VulnPattern;
 
 
 public class SliceParser {
@@ -23,6 +25,7 @@ public class SliceParser {
 	ArrayList<String> _variables; 
 	List<String> _sanitizationUsed;
 	List<String> _sensitive_sinks; 
+	private static Block_node _block_node;
 
 	public SliceParser() {
 		_variables = new ArrayList<String>();
@@ -31,11 +34,38 @@ public class SliceParser {
 	}
 
 	public static void main(String[] args) {
-		SliceParser parser = new SliceParser();
-		parser.mainParser(args[0]);
 		PatternScanner scanner = new PatternScanner();
 		scanner.readPatterns();
-		scanner.printPatterns();
+		
+		SliceParser parser = new SliceParser();
+		parser.mainParser(args[0]);
+		
+		//scanner.printPatterns();
+		
+		for(int i= 0; i< scanner.get_patterns().size();i++) {
+			VulnPattern vuln = scanner.get_patterns().get(i);
+			
+			ArrayList<Node> nodes = _block_node.get_cildren();
+			
+			System.out.println(vuln.get_entryPoints());
+			//verificar entrypoints da slice
+			
+			
+			
+			System.out.println(vuln.get_saninitizationFuncs());
+			//verificar sanitization da slice
+			
+			
+			System.out.println(vuln.get_sensitiveSinks());
+			//vertificar sensitiveSinks da slice
+			
+			
+			
+			System.out.println("");
+
+		}
+
+		
 	}
 
 
@@ -67,15 +97,13 @@ public class SliceParser {
 			FileReader f = new FileReader(filePath);
 			JsonElement element = parser.parse(f);
 
-			Block_node block_node;
-
 			if (element.isJsonObject()) {
 
 				JsonObject program = element.getAsJsonObject();
 				children = program.getAsJsonArray("children");
 				String progKind = program.get("kind").getAsString();
 
-				block_node = new Block_node(progKind);
+				_block_node = new Block_node(progKind);
 
 				ArrayList<Node> left_childs = new ArrayList<Node>();
 				ArrayList<Node> right_childs = new ArrayList<Node>();
@@ -174,7 +202,7 @@ public class SliceParser {
 								}
 							}
 
-							Call_node call = new Call_node(what_kind, what_name,funcArgsList);
+							Call_node call = new Call_node(kind, what_name,funcArgsList);
 							right_childs.add(call);
 						}
 					}
@@ -184,10 +212,28 @@ public class SliceParser {
 				ArrayList<Node> newListChilds = new ArrayList<Node>(left_childs);
 				newListChilds.addAll(right_childs);
 				
-				block_node.set_cildren(newListChilds); //o bloco tem todos os filhos do programa
-
-				System.out.println(block_node.toString());
-
+				_block_node.set_cildren(newListChilds); //o bloco tem todos os filhos do programa
+				
+				for(int i =0;i<_block_node.get_cildren().size();i++){
+					System.out.println(_block_node.get_cildren().get(i).toString());
+				}
+				
+				ArrayList<Expression_node> arr = _block_node.get_variable_child();
+				ArrayList<Statement_node> arr2 = _block_node.get_funcCall_child();
+				ArrayList<Expression_node> arr3 = _block_node.get_offsetlookup_child();
+			
+				for(int i =0;i<arr.size();i++){
+					//System.out.println(arr.get(i).toString());
+				}
+				
+				for(int i =0;i<arr2.size();i++){
+					//System.out.println(arr2.get(i).toString());
+				}
+				
+				for(int i =0;i<arr3.size();i++){
+					//System.out.println(arr3.get(i).toString());
+				}
+		
 			}
 
 		} catch (FileNotFoundException e) {

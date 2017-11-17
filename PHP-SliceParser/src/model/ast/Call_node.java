@@ -4,13 +4,23 @@ import java.util.ArrayList;
 
 public class Call_node extends Statement_node {
 
+	public String _kind;
 	public String _funcName;
 	public ArrayList<Expression_node> _args;
 
 	public Call_node(String kind, String funcName, ArrayList<Expression_node> args) {
 		super(kind);
+		_kind = kind;
 		_funcName = funcName;
 		_args = args;
+	}
+
+	public String get_kind() {
+		return _kind;
+	}
+
+	public void set_kind(String _kind) {
+		this._kind = _kind;
 	}
 
 	public String get_funcName() {
