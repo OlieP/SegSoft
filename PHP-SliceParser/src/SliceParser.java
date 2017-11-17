@@ -16,6 +16,7 @@ import model.ProgramSlice;
 import model.SliceElement.OffsetLookup;
 import model.ast.Assign_node;
 import model.ast.Block_node;
+import model.ast.Call_node;
 import model.ast.Encapsed_node;
 import model.ast.Expression_node;
 import model.ast.Variable_node;
@@ -194,11 +195,7 @@ public class SliceParser {
 								System.out.println("name: "+ str_value);
 							}
 
-							//	Statement_node pc = new Encapsed_node(kind, );
-
-
 						}
-						
 						
 						if(right_child_kind.equals("call"))
 						{
@@ -209,24 +206,37 @@ public class SliceParser {
 							System.out.println("----call/what---");
 							System.out.println(what);
 
-							ArrayList<String> funcArgsList = new ArrayList<String>();
+							
+							
+							ArrayList<Expression_node> funcArgsList = new ArrayList<Expression_node>();
 
 							if(right_child.has("arguments")) {
 								System.out.println("----call/arguments---");
+								
 								funcArgs = right_child.get("arguments").getAsJsonArray();
-								funcArgsList = fromJsonArrayToArrayList(funcArgs);
+							
 								for(int b =0; b < funcArgs.size(); b++) {
+									
 									JsonObject arg = funcArgs.get(b).getAsJsonObject();
 									String arg_kind = arg.get("kind").getAsString();
 									String arg_name = arg.get("name").getAsString();
-									System.out.println("arg_kind: "+ arg_kind +", arg_name: "+ arg_name );
+									
+									Variable_node var = new Variable_node(arg_kind,arg_name);
+									
+									funcArgsList.add(var);
+									
+									System.out.println(var);
 								}
 							}
+							
+							Call_node call = new Call_node(what_kind, what_name,funcArgsList);
+							right_childs.add(call);
 						}
 					}
 					System.out.println("\n------- Next Child -------\n");
 				}
-
+				
+				System.out.println(right_childs);
 				/*for (int i = 0; i < children.size(); i++) {
 
 					System.out.println("------- Child: "+(i+1)+" -------");
