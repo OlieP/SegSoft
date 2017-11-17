@@ -44,7 +44,7 @@ public class PatternScanner {
 
 			VulnPattern pattern = new VulnPattern();
 
-			//String line1; // String that holds current file line
+			//String_node line1; // String_node that holds current file line
 			int count = 0; // Line number of count 
 			int count1 = 0;
 			int count2 = 0;
@@ -112,7 +112,7 @@ public class PatternScanner {
 	protected void printPatterns() {
 		System.out.println("There are "+ _patterns.size()+ " patterns");
 
-		//List<String> coll = _patterns.get("SQL injection");
+		//List<String_node> coll = _patterns.get("SQL injection");
 		//System.out.println(coll);
 		for(int i= 0; i< _patterns.size();i++) {
 			VulnPattern vuln = _patterns.get(i);

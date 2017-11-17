@@ -2,13 +2,15 @@ package model;
 
 import java.util.ArrayList;
 
+import model.ast.Node;
+
 public class ProgramSlice {
 	private String _kind;
-	private String _operator;
-	private ArrayList<SliceElement> _children;
+	private ArrayList<Node> _children;
 	
-	public ProgramSlice(String kind, String operator) {
-		// TODO Auto-generated constructor stub
+	public ProgramSlice() {
+		_kind = "";
+		_children = new ArrayList<Node>();
 	}
 
 	public String get_kind() {
@@ -19,20 +21,14 @@ public class ProgramSlice {
 		this._kind = _kind;
 	}
 
-	public ArrayList<SliceElement> getChildren() {
+	public ArrayList<Node> getChildren() {
 		return _children;
 	}
-
-	public void setChildren(ArrayList<SliceElement> children) {
+	public void addChild(Node child) {
+		this._children.add(child);
+	}
+	public void setChildren(ArrayList<Node> children) {
 		this._children = children;
 	}
 
-	public String get_operator() {
-		return _operator;
-	}
-
-	public void set_operator(String _operator) {
-		this._operator = _operator;
-	}
-	
 }
