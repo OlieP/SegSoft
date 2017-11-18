@@ -11,7 +11,6 @@ public class OffsetLookup_node extends Lookup_node {
 		this._offset = offset;
 	}
 
-	
 	public Expression_node get_what() {
 		return _what;
 	}

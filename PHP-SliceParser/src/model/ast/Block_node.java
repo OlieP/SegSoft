@@ -33,8 +33,14 @@ public class Block_node extends Statement_node {
 	public ArrayList<Expression_node> get_variable_child() {
 		ArrayList<Expression_node> var = new ArrayList<Expression_node>();
 		for(int i = 0; i< _children.size();i++) {
-			if(_children.get(i).get_kind().equals("variable")){
-				Expression_node v = (Variable_node) _children.get(i);
+			if(_children.get(i).get_kind().equals("variable")  ){
+				Variable_node v = (Variable_node) _children.get(i);
+				//System.out.println("Variable: "+v.getName() + " added....");
+				var.add(v);
+			}
+			if( _children.get(i).get_kind().equals("offsetlookup")) {
+				OffsetLookup_node v = (OffsetLookup_node) _children.get(i);
+				//System.out.println("Variable: "+ v.get_what().toString() + " added....");
 				var.add(v);
 			}
 		}
@@ -45,7 +51,7 @@ public class Block_node extends Statement_node {
 		ArrayList<Expression_node> var = new ArrayList<Expression_node>();
 		for(int i = 0; i< _children.size();i++) {
 			if(_children.get(i).get_kind().equals("offsetlookup")){
-				Expression_node v = (Expression_node) _children.get(i);
+				Expression_node v = (Lookup_node) _children.get(i);
 				var.add(v);
 			}
 		}

@@ -73,7 +73,7 @@ public class PatternScanner {
 				String split_3[] = line3.split(",");
 
 				for(int i = 0,j=0,k=0; i < split_1.length && j<split_2.length && k < split_3.length; i++,j++,k++){
-					pattern.add_entryPoint(split_1[i]);
+					pattern.add_entryPoint(split_1[i].substring(1));
 					pattern.add_sanitization(split_2[1]);
 					pattern.add_sensitiveSink(split_3[i]);
 				}

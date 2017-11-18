@@ -1,6 +1,7 @@
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import com.google.gson.JsonArray;
@@ -20,53 +21,82 @@ import model.ast.Variable_node;
 import patterns.VulnPattern;
 
 
-public class SliceParser {
+public class SliceParser 
+{
 
 	ArrayList<String> _variables; 
 	List<String> _sanitizationUsed;
 	List<String> _sensitive_sinks; 
 	private static Block_node _block_node;
+	private static HashMap<String, Boolean> _tainted_vars;
 
-	public SliceParser() {
+	public SliceParser() 
+	{
 		_variables = new ArrayList<String>();
 		_sanitizationUsed =  new ArrayList<String>();
 		_sensitive_sinks =  new ArrayList<String>();
+		_tainted_vars = new HashMap<String,Boolean>();
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args)
+	{
 		PatternScanner scanner = new PatternScanner();
 		scanner.readPatterns();
-		
+
 		SliceParser parser = new SliceParser();
 		parser.mainParser(args[0]);
-		
+
 		//scanner.printPatterns();
-		
-		for(int i= 0; i< scanner.get_patterns().size();i++) {
-			VulnPattern vuln = scanner.get_patterns().get(i);
-			
-			ArrayList<Node> nodes = _block_node.get_cildren();
-			
-			System.out.println(vuln.get_entryPoints());
-			//verificar entrypoints da slice
-			
-			
-			
-			System.out.println(vuln.get_saninitizationFuncs());
-			//verificar sanitization da slice
-			
-			
-			System.out.println(vuln.get_sensitiveSinks());
-			//vertificar sensitiveSinks da slice
-			
-			
-			
-			System.out.println("");
+		ArrayList<Expression_node> entry_point_vars = _block_node.get_variable_child();
+		ArrayList<Expression_node> entry_offset_vars = _block_node.get_offsetlookup_child();
+		ArrayList<Node> nodes = _block_node.get_cildren();
+		VulnPattern vuln = new VulnPattern();
 
+		for(int i= 0; i < scanner.get_patterns().size();i++) 
+		{
+			vuln = scanner.get_patterns().get(i);
 		}
+		ArrayList<String> vuln_entry_points = vuln.get_entryPoints();
 
-		
+		for(int v=0;v<vuln_entry_points.size();v++)
+		{
+			for(int j=0;j<entry_point_vars.size();j++) 
+			{
+				Expression_node exp = (Expression_node) entry_point_vars.get(j);
+				String expStr = exp.get_kind();
+
+				if(expStr.equals("variable"))
+				{
+					Variable_node vn = (Variable_node) entry_point_vars.get(j);
+					System.out.println(vn.getName());
+					System.out.println(vuln_entry_points.get(v).toString());
+					if(vn.getName().equals(vuln_entry_points.get(v).toString())) {
+						System.out.println("variable-MATCH"+vn.getName());
+					}
+					
+				}
+				if (expStr.equals("offsetlookup")) 
+				{
+					OffsetLookup_node o = (OffsetLookup_node) entry_point_vars.get(j);
+					Expression_node what = o.get_what();
+					
+					if(what.get_kind().equals("variable")) 
+					{
+						Variable_node vn = (Variable_node) o.get_what();
+						System.out.println(vn.getName());
+						System.out.println(vuln_entry_points.get(v).toString());
+						if(vn.getName().equals(vuln_entry_points.get(v).toString())) {
+							System.out.println("variable-MATCH" + vn.getName());
+						}
+						//System.out.println(vn.getName());
+					}
+				}
+			}
+		}
 	}
+
+
+
 
 
 	public ArrayList<String> fromJsonArrayToArrayList(JsonArray value) {
@@ -127,7 +157,7 @@ public class SliceParser {
 
 						right_child = child.get("right").getAsJsonObject();
 						String right_child_kind = right_child.get("kind").getAsString();
-						
+
 						if(right_child_kind.equals("offsetlookup")) {
 							JsonObject what = right_child.get("what").getAsJsonObject();
 							String what_kind = what.get("kind").getAsString();
@@ -211,29 +241,21 @@ public class SliceParser {
 				//coloca os filhos esquerdos e direitos no mesmo array... pode nao ser preciso.
 				ArrayList<Node> newListChilds = new ArrayList<Node>(left_childs);
 				newListChilds.addAll(right_childs);
-				
+
 				_block_node.set_cildren(newListChilds); //o bloco tem todos os filhos do programa
-				
+
 				for(int i =0;i<_block_node.get_cildren().size();i++){
-					System.out.println(_block_node.get_cildren().get(i).toString());
+					//System.out.println(_block_node.get_cildren().get(i).toString());
 				}
-				
-				ArrayList<Expression_node> arr = _block_node.get_variable_child();
-				ArrayList<Statement_node> arr2 = _block_node.get_funcCall_child();
-				ArrayList<Expression_node> arr3 = _block_node.get_offsetlookup_child();
-			
-				for(int i =0;i<arr.size();i++){
+
+				//ArrayList<Expression_node> arr = _block_node.get_variable_child();
+				//ArrayList<Statement_node> arr2 = _block_node.get_funcCall_child();
+				//ArrayList<Expression_node> arr3 = _block_node.get_offsetlookup_child();
+
+				/*for(int i =0;i<arr.size();i++){
 					//System.out.println(arr.get(i).toString());
-				}
-				
-				for(int i =0;i<arr2.size();i++){
-					//System.out.println(arr2.get(i).toString());
-				}
-				
-				for(int i =0;i<arr3.size();i++){
-					//System.out.println(arr3.get(i).toString());
-				}
-		
+				}*/
+
 			}
 
 		} catch (FileNotFoundException e) {
