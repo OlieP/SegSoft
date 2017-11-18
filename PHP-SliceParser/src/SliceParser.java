@@ -48,10 +48,14 @@ public class SliceParser
 
 		//scanner.printPatterns();
 		ArrayList<Expression_node> entry_point_vars = _block_node.get_variable_child();
-		ArrayList<Expression_node> entry_offset_vars = _block_node.get_offsetlookup_child();
+		ArrayList<Expression_node> offset_vars = _block_node.get_offsetlookup_child();
+		ArrayList<Statement_node> call_vars = _block_node.get_funcCall_child();
 		ArrayList<Node> nodes = _block_node.get_cildren();
 		VulnPattern vuln = new VulnPattern();
 
+		//System.out.println(nodes);
+		//System.out.println(call_vars);
+		
 		for(int i= 0; i < scanner.get_patterns().size();i++) 
 		{
 			vuln = scanner.get_patterns().get(i);
@@ -68,10 +72,10 @@ public class SliceParser
 				if(expStr.equals("variable"))
 				{
 					Variable_node vn = (Variable_node) entry_point_vars.get(j);
-					System.out.println(vn.getName());
-					System.out.println(vuln_entry_points.get(v).toString());
+					//System.out.println(vn.getName());
+					//System.out.println(vuln_entry_points.get(v).toString());
 					if(vn.getName().equals(vuln_entry_points.get(v).toString())) {
-						System.out.println("variable-MATCH"+vn.getName());
+						//System.out.println("variable-MATCH"+vn.getName());
 					}
 					
 				}
@@ -83,14 +87,51 @@ public class SliceParser
 					if(what.get_kind().equals("variable")) 
 					{
 						Variable_node vn = (Variable_node) o.get_what();
-						System.out.println(vn.getName());
-						System.out.println(vuln_entry_points.get(v).toString());
+						//System.out.println(vn.getName());
+						//System.out.println(vuln_entry_points.get(v).toString());
 						if(vn.getName().equals(vuln_entry_points.get(v).toString())) {
-							System.out.println("variable-MATCH" + vn.getName());
+							//System.out.println("variable-MATCH " + vn.getName());
 						}
 						//System.out.println(vn.getName());
 					}
 				}
+			}
+		}
+		ArrayList<String> vuln_sanitization = vuln.get_saninitizationFuncs();
+		
+		//System.out.println(vuln_sanitization);
+		
+		for(int v = 0; v < vuln_sanitization.size(); v++)
+		{
+			
+			System.out.println("\nTESTING: "+ vuln_sanitization.get(v).toString());
+			for(int j = 0; j < call_vars.size(); j++) 
+			{
+				Statement_node exp = (Statement_node) call_vars.get(j);
+				String expStr = exp.get_kind();
+				
+				System.out.println(exp.get_kind());
+				
+				if(expStr.equals("call"))
+				{
+				
+					System.out.println("--------------------");
+					System.out.println("Call: ");
+					System.out.println(vuln_sanitization.get(v).toString());
+					System.out.println("--------------------");
+					
+					
+					//if(fName.equals(vuln_sanitization.get(v).toString())) 
+					//{
+						//System.out.println("MATCH-SANITIZATION: "+fName);
+					//}
+					
+					for(int k = 0; k < 1; k++) 
+					{
+						
+					}
+				}
+			
 			}
 		}
 	}

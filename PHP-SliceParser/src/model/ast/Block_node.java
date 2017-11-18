@@ -21,10 +21,21 @@ public class Block_node extends Statement_node {
 
 	public ArrayList<Statement_node> get_funcCall_child() {
 		ArrayList<Statement_node> var = new ArrayList<Statement_node>();
-		for(int i = 0; i< _children.size();i++) {
-			if(_children.get(i).get_kind().equals("call")){
-				Statement_node v = (Call_node) _children.get(i);
-				var.add(v);
+		for(int i = 0; i< _children.size();i++) 
+		{
+			if(_children.get(i).get_kind().equals("assign"))
+			{
+				Assign_node an = (Assign_node) _children.get(i);
+				Expression_node right = an.getRight_side();
+				System.out.println(right);
+				if(right.get_kind().equals("call")) 
+				{
+					Statement_node v = (Call_node) _children.get(i);
+					var.add(v);
+					System.out.println("RIGHT SIDE::: CALL");
+				}
+				//Statement_node v = (Call_node) _children.get(i);
+				
 			}
 		}
 		return var;
