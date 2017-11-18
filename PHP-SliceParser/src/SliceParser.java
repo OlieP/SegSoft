@@ -105,6 +105,7 @@ public class SliceParser
 		{
 			
 			System.out.println("\nTESTING: "+ vuln_sanitization.get(v).toString());
+			
 			for(int j = 0; j < call_vars.size(); j++) 
 			{
 				Statement_node exp = (Statement_node) call_vars.get(j);
