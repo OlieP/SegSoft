@@ -19,34 +19,24 @@ import patterns.VulnPattern;
 public class PatternScanner {
 
 	private final Path fFilePath= null ;
-	private ArrayList<VulnPattern> _patterns = new ArrayList<VulnPattern>();
+	ArrayList<VulnPattern> _patterns;
 
 	public PatternScanner(){
 		_patterns = new ArrayList<VulnPattern>();
 	}
 
 	
-	public ArrayList<VulnPattern> get_patterns() {
-		return _patterns;
-	}
-
-	public void set_patterns(ArrayList<VulnPattern> _patterns) {
-		this._patterns = _patterns;
-	}
-
-	
-	public void readPatterns( ) {
+	public ArrayList<VulnPattern> readPatterns( ) {
 		String line; 
 		String line1;
 		String line2;
 		String line3;
 
+	    ArrayList<VulnPattern> _patterns = new ArrayList<VulnPattern>();
 		try {
 			FileReader input = new FileReader("C:\\Users\\pemol\\git\\SegSoft1718\\PHP-SliceParser\\slices\\Patterns.txt");
 
 			BufferedReader bufRead = new BufferedReader(input);
-
-			VulnPattern pattern = new VulnPattern();
 
 			//String_node line1; // String_node that holds current file line
 			int count = 0; // Line number of count 
@@ -60,8 +50,13 @@ public class PatternScanner {
 			count2++;
 			// Read through file one line at time. Print line # and line
 
+			//ArrayList<VulnPattern> patterns = new ArrayList<VulnPattern>(); 
+			VulnPattern pattern;
+			
 			while (line != null){
+				
 				pattern = new VulnPattern();
+			
 				//System.out.println("1st Line:" + count+": "+line);
 
 				line1 = bufRead.readLine();
@@ -72,25 +67,23 @@ public class PatternScanner {
 				String split_2[] = line2.split(",");
 				String split_3[] = line3.split(",");
 
-				for(int i = 0,j=0,k=0; i < split_1.length && j<split_2.length && k < split_3.length; i++,j++,k++){
-					pattern.add_entryPoint(split_1[i].substring(1));
-					pattern.add_sanitization(split_2[1]);
-					pattern.add_sensitiveSink(split_3[i]);
+				for(int i = 0; i < split_1.length ; i++){
+					pattern.add_entryPoint(split_1[i].substring(1));	
 				}
 				//pattern.set_entryPoints(pattern_l1);
 				for(int i = 0; i < split_2.length ; i++){
-					
+					pattern.add_sanitization(split_2[i]);
 				}
 				//pattern.set_saninitizationFuncs(pattern_l2);
 				for(int i = 0; i < split_3.length ; i++){
-					
+					pattern.add_sensitiveSink(split_3[i]);
 				}
-
-
-				_patterns.add(pattern);
-
+	
 				line = bufRead.readLine();
-
+				
+				_patterns.add(pattern);
+				
+		
 				//System.out.println("2nd Line: " +count1+": "+line1);
 				//System.out.println("3rd Line: " +count2+": "+line2);
 				//System.out.println("4rd Line: " +count3+": "+line3);
@@ -108,6 +101,7 @@ public class PatternScanner {
 			e.printStackTrace();
 		}
 
+		return _patterns;
 	}
 
 
@@ -125,9 +119,6 @@ public class PatternScanner {
 			System.out.println("");
 
 		}
-
-
-
 	}
 
 }

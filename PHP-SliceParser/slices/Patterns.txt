@@ -12,12 +12,12 @@ mysqli_stmt_bind_param,mysqli_stmt_bind_param
 mysqli_stmt_execute
 SQL injection
 $_GET,$_POST,$_COOKIE
-mysqli::escape_string,mysqli::real_escape_string
-mysqli::query,mysqli::multi_query,mysqli::real_query
+escape_string,real_escape_string
+query,multi_query,real_query
 SQL injection
 $_GET,$_POST,$_COOKIE
-mysqli_stmt::bind_param
-mysqli_stmt::execute
+bind_param
+execute
 SQL injection
 $_GET,$_POST,$_COOKIE
 db2_escape_string

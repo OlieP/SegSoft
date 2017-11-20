@@ -5,11 +5,12 @@ public class Assign_node extends Statement_node{
 	private Expression_node left_node;
 	private Expression_node right_node;
 
-	public Assign_node(String kind, String left_name) {
+	public Assign_node(String kind) {
 		super(kind);
 		left_node = new Expression_node(kind);
 		right_node = new Expression_node(kind);
 	}
+	
 
 	public Expression_node  getLeft_var_node() {
 		return left_node;
